@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Heart, MapPin, Calendar, Menu, X } from 'lucide-react';
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSAug8VPgY7gIt6psTuW-FzTCin-xyyUxVuHVbgerOVik8X1_x9_DL6EuxLAiPr8_V/exec';
@@ -11,111 +11,234 @@ const translations = {
       rsvp: 'Ilmoittaudu',
     },
     home: {
-      tagline: 'Liity kanssamme juhlimaan rakkauttamme',
-      rsvpButton: 'ILMOITTAUDU',
-      storyTitle: 'Jotain söpöä',
-      storyText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      tagline: 'Tervetuloa häihimme!',
+      rsvpButton: 'Ilmoittaudu',
     },
     info: {
-      title: 'info',
+      title: 'Info',
       ceremony: 'Vihkiminen',
       ceremonyDate: 'Lauantai, 12.9.2026',
       ceremonyVenue: 'Viinikan kirkko, Tampere',
-      reception: 'Juhlatila',
+      ceremonyAddress: 'Kadunnimi 1, 33XXX Tampere',
+      reception: 'Juhla',
       receptionVenue: 'Komediateatteri, Tampere',
+      receptionAddress: 'Kadunnimi 1, 33XXX Tampere',
+      receptionTime: 'alkaen 14:00',
       dressCode: 'Pukukoodi',
-      dressCodeValue: 'Tumma puku',
+      dressCodeValue: 'Juhlallinen',
       dressCodeNote: 'jotain muuta?',
       other: 'Muuta',
       otherContent: 'muuta',
       otherNote: 'muuta',
+      gift: 'Häälahjat',
+      giftText: 'Häälahjaksi toivomme taloudellista tukea häämatkallemme. Voitte lähettää haluamanne summan pankkitilille:',
+      giftAccount: 'IBAN: [tba]',
+      giftName: 'nimi',
       location: 'Sijainti',
     },
     rsvp: {
-      title: 'RSVP',
-      subtitle: 'Haluamme juhlia kanssanne! Vastatkaa 1.5.2026 mennessä.',
-      successMessage: 'Kiitos! RSVP-vastauksenne on vastaanotettu.',
+      title: 'Ilmoittautuminen',
+      subtitle: 'Haluamme juhlia kanssanne! Ilmoittautukaa 1.5.2026 mennessä.',
+      successMessage: 'Kiitos! Ilmoittautumisenne on vastaanotettu.',
       errorMessage: 'Hups! Jotain meni pieleen. Yritä uudelleen tai ota meihin yhteyttä suoraan.',
-      name: 'Koko nimi *',
-      namePlaceholder: 'Nimesi',
-      email: 'Sähköposti *',
-      emailPlaceholder: 'sinun.sahkoposti@esimerkki.fi',
-      attending: 'Osallistutteko? *',
-      accept: 'Ilomielin hyväksymme',
-      decline: 'Pahoitellen kieltäydymme',
-      guests: 'Vieraiden lukumäärä *',
-      guest1: '1 vieras',
-      guest2: '2 vierasta',
-      guest3: '3 vierasta',
-      guest4: '4 vierasta',
+      attending: 'Osallistutteko?',
+      accept: 'Joo',
+      decline: 'Ei',
+      declineName: 'Nimesi *',
+      decliningNamePlaceholder: 'Etunimi Sukunimi',
+      guestCount: 'Vieraiden lukumäärä',
+      guestLabel: 'Vieras',
+      guestName: 'Nimi *',
+      guestNamePlaceholder: 'Vieraan nimi',
       dietary: 'Ruokarajoitukset',
       vegetarian: 'Kasvisruokavalio',
       vegan: 'Vegaani',
       glutenFree: 'Gluteeniton',
-      allergies: 'Allergiat tai muut ruokavaliotarpeet',
-      allergiesPlaceholder: 'Kertokaa allergioistanne tai erityisistä ruokavaliotarpeistanne...',
+      allergies: 'Muut allergiat tai ruokavaliotarpeet',
+      allergiesPlaceholder: 'Kerro allergioista tai erityisistä ruokavaliotarpeista...',
+      speech: 'Haluatteko pitää puheen tai muun esityksen?',
+      speechNote: 'Kerrottehan viestikentässä lyhyesti aiheesta, niin osaamme järjestää teille ajan ohjelmassa.',
       message: 'Viesti pariskunnalle',
-      messagePlaceholder: 'Jättäkää onnittelunne tai kysymyksenne...',
+      messagePlaceholder: 'Jättäkää onnittelunne, kysymyksenne tai lisätietoja puheesta...',
       sending: 'Lähetetään...',
-      submit: 'Lähetä RSVP',
+      submit: 'Lähetä ilmoittautuminen',
     },
   },
   sv: {
     nav: {
       home: 'Hem',
       info: 'Info',
-      rsvp: 'OSA',
+      rsvp: 'Anmälan',
     },
     home: {
-      tagline: 'Följ med oss och fira vår kärlek',
-      rsvpButton: 'OSA',
-      storyTitle: 'Något gulligt',
-      storyText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      tagline: 'Välkommen till vårt bröllop!',
+      rsvpButton: 'Anmälan',
     },
     info: {
-      title: 'info',
+      title: 'Info',
       ceremony: 'Vigsel',
       ceremonyDate: 'Lördag, 12.9.2026',
       ceremonyVenue: 'Viinikan kyrka, Tammerfors',
-      reception: 'Festlokal',
+      ceremonyAddress: 'Gatunamn 1, 33XXX Tammerfors',
+      reception: 'Fest',
       receptionVenue: 'Komediateatteri, Tammerfors',
+      receptionAddress: 'Gatunamn 1, 33XXX Tammerfors',
+      receptionTime: 'från 14:00',
       dressCode: 'Klädkod',
-      dressCodeValue: 'Mörk kostym',
+      dressCodeValue: 'Festlig',
       dressCodeNote: 'något annat?',
       other: 'Övrigt',
       otherContent: 'annat',
       otherNote: 'annat',
+      gift: 'Bröllopsgåva',
+      giftText: 'Som bröllopsgåva önskar vi ekonomiskt stöd till vår smekmånadsresa. Ni är välkomna att skicka valfri summa till bankgirot:',
+      giftAccount: 'IBAN: [tba]',
+      giftName: 'nimi',
       location: 'Plats',
     },
     rsvp: {
-      title: 'OSA',
-      subtitle: 'Vi vill gärna fira med er! Vänligen svara senast 1.5.2026.',
-      successMessage: 'Tack! Ditt OSA har mottagits.',
+      title: 'Anmälan',
+      subtitle: 'Vi vill gärna fira med er! Vänligen anmäl er senast 1.5.2026.',
+      successMessage: 'Tack! Er anmälan har mottagits.',
       errorMessage: 'Hoppsan! Något gick fel. Försök igen eller kontakta oss direkt.',
-      name: 'Fullständigt namn *',
-      namePlaceholder: 'Ditt namn',
-      email: 'E-post *',
-      emailPlaceholder: 'din.epost@exempel.se',
-      attending: 'Kommer ni att delta? *',
-      accept: 'Tackar ja med glädje',
-      decline: 'Tackar tyvärr nej',
-      guests: 'Antal gäster *',
-      guest1: '1 gäst',
-      guest2: '2 gäster',
-      guest3: '3 gäster',
-      guest4: '4 gäster',
+      attending: 'Kommer ni att delta?',
+      accept: 'Ja',
+      decline: 'Nej',
+      declineName: 'Ditt namn *',
+      decliningNamePlaceholder: 'Förnamn Efternamn',
+      guestCount: 'Antal gäster',
+      guestLabel: 'Gäst',
+      guestName: 'Namn *',
+      guestNamePlaceholder: 'Gästens namn',
       dietary: 'Kostbegränsningar',
       vegetarian: 'Vegetarisk',
       vegan: 'Vegan',
       glutenFree: 'Glutenfri',
-      allergies: 'Allergier eller andra kostbehov',
-      allergiesPlaceholder: 'Meddela oss om allergier eller specifika kostbehov...',
+      allergies: 'Övriga allergier eller kostbehov',
+      allergiesPlaceholder: 'Berätta om allergier eller specifika kostbehov...',
+      speech: 'Vill ni hålla tal eller annat framträdande?',
+      speechNote: 'Berätta kort om det i meddelandefältet så vi kan ge er tid i programmet.',
       message: 'Meddelande till brudparet',
-      messagePlaceholder: 'Dela dina lyckönskningar eller ställ dina frågor...',
+      messagePlaceholder: 'Dela dina lyckönskningar, frågor eller info om tal...',
       sending: 'Skickar...',
-      submit: 'Skicka OSA',
+      submit: 'Skicka anmälan',
     },
   },
+};
+
+const PASSCODE = '1209';
+
+const LockScreen = ({ onUnlock }) => {
+  const [digits, setDigits] = useState(['', '', '', '']);
+  const [error, setError] = useState(false);
+  const ref0 = useRef(null);
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+  const refs = [ref0, ref1, ref2, ref3];
+
+  const handleChange = (index, value) => {
+    if (!/^\d*$/.test(value)) return;
+    const newDigits = [...digits];
+    newDigits[index] = value.slice(-1);
+    setDigits(newDigits);
+    setError(false);
+
+    if (value && index < 3) refs[index + 1].current.focus();
+
+    const code = newDigits.join('');
+    if (code.length === 4) {
+      if (code === PASSCODE) {
+        localStorage.setItem('wedding_auth', 'true');
+        onUnlock();
+      } else {
+        setError(true);
+        const cleared = ['', '', '', ''];
+        setDigits(cleared);
+        refs[0].current.focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !digits[index] && index > 0) {
+      refs[index - 1].current.focus();
+    }
+  };
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      background: '#faf8f5',
+      backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)`,
+      backgroundRepeat: 'repeat',
+      backgroundSize: 'auto 30%',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      fontFamily: "'Montserrat', sans-serif",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap');
+        .pin-input {
+          width: 64px; height: 72px;
+          font-size: 2rem; font-weight: 600;
+          text-align: center;
+          border: 1px solid #e5e0d8;
+          border-radius: 4px;
+          background: rgba(255,255,255,0.85);
+          color: #2c2c2c;
+          outline: none;
+          font-family: 'Montserrat', sans-serif;
+          transition: border-color 0.2s;
+          -webkit-text-security: disc;
+        }
+        .pin-input:focus { border-color: #2c5f5d; background: #fff; }
+        .pin-input.pin-error { border-color: #c62828; animation: shake 0.3s ease; }
+        @keyframes shake {
+          0%,100% { transform: translateX(0); }
+          25% { transform: translateX(-6px); }
+          75% { transform: translateX(6px); }
+        }
+      `}</style>
+
+      <div style={{ textAlign: 'center', padding: '2.5rem 2rem', background: 'rgba(250,248,245,0.92)', borderRadius: '6px', border: '1px solid #e5e0d8', maxWidth: '360px', width: '90%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+          <div style={{ width: '40px', height: '1px', background: '#d4a574' }} />
+          <Heart size={20} color="#d4a574" />
+          <div style={{ width: '40px', height: '1px', background: '#d4a574' }} />
+        </div>
+        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.2rem', fontWeight: 300, color: '#2c5f5d', letterSpacing: '3px', marginBottom: '0.25rem' }}>
+          Riikka & Aleksi
+        </h1>
+        <p style={{ color: '#888', fontSize: '0.85rem', letterSpacing: '1px', marginBottom: '2rem' }}>12.9.2026</p>
+
+        <p style={{ color: '#555', fontSize: '0.9rem', marginBottom: '1.25rem' }}>Syötä salasana / Ange lösenord</p>
+
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1rem' }}>
+          {refs.map((ref, i) => (
+            <input
+              key={i}
+              ref={ref}
+              className={`pin-input${error ? ' pin-error' : ''}`}
+              type="tel"
+              inputMode="numeric"
+              maxLength={1}
+              value={digits[i]}
+              onChange={e => handleChange(i, e.target.value)}
+              onKeyDown={e => handleKeyDown(i, e)}
+              autoFocus={i === 0}
+            />
+          ))}
+        </div>
+
+        {error && (
+          <p style={{ color: '#c62828', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+            Väärä koodi / Fel kod
+          </p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 const HomePage = ({ setCurrentPage, t }) => (
@@ -160,9 +283,8 @@ const HomePage = ({ setCurrentPage, t }) => (
       </button>
     </div>
 
-    <div className="story-section">
-      <h2>{t.home.storyTitle}</h2>
-      <p>{t.home.storyText}</p>
+    <div className="photo-section">
+      {/* Photos coming soon */}
     </div>
   </div>
 );
@@ -176,15 +298,18 @@ const InfoPage = ({ t }) => (
         <h2>{t.info.ceremony}</h2>
         <div className="info-details">
           <div className="detail-row">
+            <span className="time">13:00</span>
+          </div>
+          <div className="detail-row">
             <Calendar size={18} />
             <span>{t.info.ceremonyDate}</span>
           </div>
           <div className="detail-row">
-            <span className="time">13:00</span>
-          </div>
-          <div className="detail-row">
             <MapPin size={18} />
-            <span>{t.info.ceremonyVenue}</span>
+            <div>
+              <span>{t.info.ceremonyVenue}</span>
+              <span className="address">{t.info.ceremonyAddress}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -193,11 +318,18 @@ const InfoPage = ({ t }) => (
         <h2>{t.info.reception}</h2>
         <div className="info-details">
           <div className="detail-row">
-            <span className="time">14:00 - 23:00</span>
+            <span className="time">{t.info.receptionTime}</span>
+          </div>
+          <div className="detail-row">
+            <Calendar size={18} />
+            <span>{t.info.ceremonyDate}</span>
           </div>
           <div className="detail-row">
             <MapPin size={18} />
-            <span>{t.info.receptionVenue}</span>
+            <div>
+              <span>{t.info.receptionVenue}</span>
+              <span className="address">{t.info.receptionAddress}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -211,10 +343,11 @@ const InfoPage = ({ t }) => (
       </div>
 
       <div className="info-card">
-        <h2>{t.info.other}</h2>
+        <h2>{t.info.gift}</h2>
         <div className="info-details">
-          <p>{t.info.otherContent}</p>
-          <p className="small-text">{t.info.otherNote}</p>
+          <p>{t.info.giftText}</p>
+          <p className="gift-account">{t.info.giftAccount}</p>
+          <p className="small-text">{t.info.giftName}</p>
         </div>
       </div>
     </div>
@@ -237,58 +370,46 @@ const InfoPage = ({ t }) => (
   </div>
 );
 
+const emptyGuest = () => ({ name: '', dietary: '', allergies: '' });
+
 const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitStatus('sending');
-
     try {
       await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          timestamp: new Date().toISOString()
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, timestamp: new Date().toISOString() })
       });
-
       setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        attending: '',
-        guests: '1',
-        dietary: '',
-        allergies: '',
-        message: ''
-      });
-    } catch (error) {
+      setFormData({ name: '', attending: '', guestCount: 1, guests: [emptyGuest()], speech: false, message: '' });
+    } catch (err) {
       setSubmitStatus('error');
-      console.error('Error:', error);
+      console.error('Error:', err);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleGuestCountChange = (e) => {
+    const count = parseInt(e.target.value);
+    const current = formData.guests;
+    const newGuests = count > current.length
+      ? [...current, ...Array(count - current.length).fill(null).map(emptyGuest)]
+      : current.slice(0, count);
+    setFormData(prev => ({ ...prev, guestCount: count, guests: newGuests }));
   };
 
-  const handleDietaryChange = (e) => {
-    const value = e.target.value;
-    const current = formData.dietary.split(',').filter(Boolean);
-    if (e.target.checked) {
-      current.push(value);
-    } else {
-      const index = current.indexOf(value);
-      if (index > -1) current.splice(index, 1);
-    }
-    setFormData(prev => ({ ...prev, dietary: current.join(',') }));
+  const updateGuest = (index, field, value) => {
+    const newGuests = formData.guests.map((g, i) => i === index ? { ...g, [field]: value } : g);
+    setFormData(prev => ({ ...prev, guests: newGuests }));
+  };
+
+  const updateGuestDietary = (guestIndex, value, checked) => {
+    const current = formData.guests[guestIndex].dietary.split(',').filter(Boolean);
+    if (checked) current.push(value);
+    else current.splice(current.indexOf(value), 1);
+    updateGuest(guestIndex, 'dietary', current.join(','));
   };
 
   return (
@@ -302,7 +423,6 @@ const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) =
           <p>{t.rsvp.successMessage}</p>
         </div>
       )}
-
       {submitStatus === 'error' && (
         <div className="error-message">
           <p>{t.rsvp.errorMessage}</p>
@@ -310,117 +430,119 @@ const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) =
       )}
 
       <form onSubmit={handleSubmit} className="rsvp-form">
-        <div className="form-group">
-          <label htmlFor="name">{t.rsvp.name}</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-            placeholder={t.rsvp.namePlaceholder}
-          />
-        </div>
 
-        <div className="form-group">
-          <label htmlFor="email">{t.rsvp.email}</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-            placeholder={t.rsvp.emailPlaceholder}
-          />
-        </div>
-
+        {/* Attending */}
         <div className="form-group">
           <label>{t.rsvp.attending}</label>
           <div className="radio-group">
             <label className="radio-label">
-              <input
-                type="radio"
-                name="attending"
-                value="yes"
+              <input type="radio" name="attending" value="yes"
                 checked={formData.attending === 'yes'}
-                onChange={handleInputChange}
-                required
-              />
+                onChange={e => setFormData(prev => ({ ...prev, attending: e.target.value }))}
+                required />
               <span>{t.rsvp.accept}</span>
             </label>
             <label className="radio-label">
-              <input
-                type="radio"
-                name="attending"
-                value="no"
+              <input type="radio" name="attending" value="no"
                 checked={formData.attending === 'no'}
-                onChange={handleInputChange}
-                required
-              />
+                onChange={e => setFormData(prev => ({ ...prev, attending: e.target.value }))}
+                required />
               <span>{t.rsvp.decline}</span>
             </label>
           </div>
         </div>
 
+        {formData.attending === 'no' && (
+          <div className="form-group">
+            <label>{t.rsvp.declineName}</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder={t.rsvp.decliningNamePlaceholder}
+              required
+            />
+          </div>
+        )}
+
         {formData.attending === 'yes' && (
           <>
+            {/* Guest count */}
             <div className="form-group">
-              <label htmlFor="guests">{t.rsvp.guests}</label>
-              <select
-                id="guests"
-                name="guests"
-                value={formData.guests}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="1">{t.rsvp.guest1}</option>
-                <option value="2">{t.rsvp.guest2}</option>
-                <option value="3">{t.rsvp.guest3}</option>
-                <option value="4">{t.rsvp.guest4}</option>
+              <label htmlFor="guestCount">{t.rsvp.guestCount}</label>
+              <select id="guestCount" value={formData.guestCount} onChange={handleGuestCountChange}>
+                {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n}</option>)}
               </select>
             </div>
 
-            <div className="form-group">
-              <label>{t.rsvp.dietary}</label>
-              <div className="checkbox-group">
-                <label className="checkbox-label">
-                  <input type="checkbox" value="vegetarian" onChange={handleDietaryChange} />
-                  <span>{t.rsvp.vegetarian}</span>
-                </label>
-                <label className="checkbox-label">
-                  <input type="checkbox" value="vegan" onChange={handleDietaryChange} />
-                  <span>{t.rsvp.vegan}</span>
-                </label>
-                <label className="checkbox-label">
-                  <input type="checkbox" value="gluten-free" onChange={handleDietaryChange} />
-                  <span>{t.rsvp.glutenFree}</span>
-                </label>
-              </div>
-            </div>
+            {/* Per-guest fields */}
+            {formData.guests.map((guest, i) => (
+              <div key={i} className="guest-section">
+                <h3 className="guest-heading">{t.rsvp.guestLabel} {i + 1}</h3>
 
+                <div className="form-group">
+                  <label>{t.rsvp.guestName}</label>
+                  <input
+                    type="text"
+                    value={guest.name}
+                    onChange={e => updateGuest(i, 'name', e.target.value)}
+                    placeholder={t.rsvp.guestNamePlaceholder}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>{t.rsvp.dietary}</label>
+                  <div className="checkbox-group">
+                    {[
+                      { value: 'vegetarian', label: t.rsvp.vegetarian },
+                      { value: 'vegan', label: t.rsvp.vegan },
+                      { value: 'gluten-free', label: t.rsvp.glutenFree },
+                    ].map(opt => (
+                      <label key={opt.value} className="checkbox-label">
+                        <input type="checkbox" value={opt.value}
+                          checked={guest.dietary.split(',').includes(opt.value)}
+                          onChange={e => updateGuestDietary(i, opt.value, e.target.checked)} />
+                        <span>{opt.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>{t.rsvp.allergies}</label>
+                  <textarea
+                    value={guest.allergies}
+                    onChange={e => updateGuest(i, 'allergies', e.target.value)}
+                    rows="2"
+                    placeholder={t.rsvp.allergiesPlaceholder}
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Speech */}
             <div className="form-group">
-              <label htmlFor="allergies">{t.rsvp.allergies}</label>
-              <textarea
-                id="allergies"
-                name="allergies"
-                value={formData.allergies}
-                onChange={handleInputChange}
-                rows="3"
-                placeholder={t.rsvp.allergiesPlaceholder}
-              />
+              <label className="checkbox-label speech-checkbox">
+                <input type="checkbox"
+                  checked={formData.speech}
+                  onChange={e => setFormData(prev => ({ ...prev, speech: e.target.checked }))} />
+                <span>{t.rsvp.speech}</span>
+              </label>
+              {formData.speech && (
+                <p className="speech-note">{t.rsvp.speechNote}</p>
+              )}
             </div>
           </>
         )}
 
+        {/* Message */}
         <div className="form-group">
           <label htmlFor="message">{t.rsvp.message}</label>
           <textarea
             id="message"
-            name="message"
             value={formData.message}
-            onChange={handleInputChange}
+            onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
             rows="4"
             placeholder={t.rsvp.messagePlaceholder}
           />
@@ -435,21 +557,23 @@ const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) =
 };
 
 export default function WeddingWebsite() {
+  const [locked, setLocked] = useState(() => localStorage.getItem('wedding_auth') !== 'true');
   const [currentPage, setCurrentPage] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState('fi');
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     attending: '',
-    guests: '1',
-    dietary: '',
-    allergies: '',
+    guestCount: 1,
+    guests: [emptyGuest()],
+    speech: false,
     message: ''
   });
   const [submitStatus, setSubmitStatus] = useState('');
 
   const t = translations[lang];
+
+  if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;
 
   return (
     <div className="wedding-app">
@@ -487,17 +611,10 @@ export default function WeddingWebsite() {
 
         /* Navigation */
         nav {
-          border-bottom: 2px solid #d4b84a;
+          border-bottom: 1px solid var(--primary);
           position: sticky;
           top: 0;
           z-index: 100;
-          background-color: #fffaed;
-          background-image:
-            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g transform='translate(100,100)' opacity='0.35'><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(30)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(60)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(90)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(120)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(150)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(180)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(210)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(240)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(270)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(300)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(330)'/><circle r='16' fill='%236b3a1f'/><circle r='11' fill='%234a2810'/></g></svg>"),
-            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g transform='translate(100,100)' opacity='0.35'><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(30)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(60)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(90)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(120)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(150)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(180)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(210)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(240)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(270)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(300)'/><ellipse cx='0' cy='-28' rx='7' ry='14' fill='%23f5c518' transform='rotate(330)'/><circle r='16' fill='%236b3a1f'/><circle r='11' fill='%234a2810'/></g></svg>");
-          background-size: 160px 160px, 160px 160px;
-          background-position: 0 0, 80px 80px;
-          background-repeat: repeat, repeat;
         }
 
         .nav-container {
@@ -594,6 +711,11 @@ export default function WeddingWebsite() {
         }
 
         @media (max-width: 768px) {
+          .nav-container {
+            display: flex;
+            justify-content: space-between;
+          }
+
           .menu-toggle {
             display: block;
           }
@@ -604,10 +726,12 @@ export default function WeddingWebsite() {
             left: 0;
             right: 0;
             flex-direction: column;
-            background: #fffaed;
+            background-image: url('${process.env.PUBLIC_URL}/background.png');
+            background-repeat: repeat;
+            background-size: auto;
             padding: 2rem;
             gap: 1.5rem;
-            border-bottom: 2px solid #d4b84a;
+            border-bottom: 2px solid var(--primary);
             transform: translateY(-100%);
             opacity: 0;
             pointer-events: none;
@@ -809,7 +933,7 @@ export default function WeddingWebsite() {
 
         .info-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          grid-template-columns: repeat(2, 1fr);
           gap: 2rem;
           margin-bottom: 4rem;
         }
@@ -864,6 +988,13 @@ export default function WeddingWebsite() {
           color: var(--text-light);
         }
 
+        .address {
+          display: block;
+          font-size: 0.85rem;
+          color: var(--text-light);
+          margin-top: 0.2rem;
+        }
+
         .map-section {
           margin-top: 4rem;
         }
@@ -902,6 +1033,51 @@ export default function WeddingWebsite() {
           color: var(--text-light);
           margin-bottom: 3rem;
           font-size: 1.1rem;
+        }
+
+        .photo-section {
+          margin-top: 4rem;
+          min-height: 200px;
+        }
+
+        .guest-section {
+          border: 1px solid var(--border-color);
+          border-radius: 4px;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+          background: var(--bg-cream);
+        }
+
+        .guest-heading {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.3rem;
+          color: var(--primary);
+          font-weight: 600;
+          margin-bottom: 1.25rem;
+        }
+
+        .speech-checkbox {
+          font-weight: 500;
+          margin-bottom: 0.5rem;
+        }
+
+        .speech-note {
+          font-size: 0.88rem;
+          color: var(--primary);
+          background: var(--accent-light);
+          border-left: 3px solid var(--accent);
+          padding: 0.6rem 0.9rem;
+          border-radius: 2px;
+          margin-top: 0.5rem;
+          line-height: 1.5;
+        }
+
+        .gift-account {
+          font-weight: 600;
+          color: var(--primary);
+          font-size: 0.95rem;
+          margin-top: 0.5rem;
+          letter-spacing: 0.5px;
         }
 
         .rsvp-form {
@@ -1048,7 +1224,7 @@ export default function WeddingWebsite() {
         }
       `}</style>
 
-      <nav>
+      <nav style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)`, backgroundRepeat: 'repeat', backgroundSize: 'auto 400%', backgroundPosition: '0 -132px', backgroundColor: '#faf8f5' }}>
         <div className="nav-container">
           <div className="logo">R & A</div>
           <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
