@@ -1,5 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { Heart, MapPin, Calendar, Menu, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { GamePage } from './GamePage';
+import { Heart, MapPin, Calendar, Menu, X, Smile } from 'lucide-react';
+import { ReactComponent as DressIcon } from './dress.svg';
+import { ReactComponent as SuitIcon } from './suit.svg';
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSAug8VPgY7gIt6psTuW-FzTCin-xyyUxVuHVbgerOVik8X1_x9_DL6EuxLAiPr8_V/exec';
 
@@ -19,30 +22,35 @@ const translations = {
       ceremony: 'Vihkiminen',
       ceremonyDate: 'Lauantai, 12.9.2026',
       ceremonyVenue: 'Viinikan kirkko, Tampere',
-      ceremonyAddress: 'Kadunnimi 1, 33XXX Tampere',
+      ceremonyAddress: 'Kaartotie 1, 33100 Tampere',
       reception: 'Juhla',
       receptionVenue: 'Komediateatteri, Tampere',
-      receptionAddress: 'Kadunnimi 1, 33XXX Tampere',
-      receptionTime: 'alkaen 14:00',
+      receptionAddress: 'Lapintie 3 a, 33100 Tampere',
+      receptionTime: 'alkaen 14.00',
       dressCode: 'Pukukoodi',
-      dressCodeValue: 'Juhlallinen',
-      dressCodeNote: 'jotain muuta?',
+      dressCodeValue: 'Juhlava',
       other: 'Muuta',
       otherContent: 'muuta',
       otherNote: 'muuta',
-      gift: 'Häälahjat',
-      giftText: 'Häälahjaksi toivomme taloudellista tukea häämatkallemme. Voitte lähettää haluamanne summan pankkitilille:',
-      giftAccount: 'IBAN: [tba]',
-      giftName: 'nimi',
+      gift: 'Häälahjatoive',
+      giftText: 'Häälahjaksi toivomme vain että tulette paikalle',
+      giftTextSuffix: '(tai Riikka toivoo, Aleksille voitte laittaa haluamanne summan häämatkan maksamista varten)',
+      giftAccount: 'IBAN: FI29 3939 0066 2673 86',
+      giftName: 'Saaja: Riikka Koivisto',
       location: 'Sijainti',
+      countdownLabel: 'Aikaa häihin',
+      days: 'päivää',
+      hours: 'tuntia',
+      minutes: 'minuuttia',
+      seconds: 'sekuntia',
     },
     rsvp: {
       title: 'Ilmoittautuminen',
-      subtitle: 'Haluamme juhlia kanssanne! Ilmoittautukaa 1.5.2026 mennessä.',
+      note: 'Riittää että yksi henkilö/talous täyttää ilmoittautumislomakkeen. Ilmoittauduttehan 9.8.2026 mennessä.',
       successMessage: 'Kiitos! Ilmoittautumisenne on vastaanotettu.',
       errorMessage: 'Hups! Jotain meni pieleen. Yritä uudelleen tai ota meihin yhteyttä suoraan.',
-      attending: 'Osallistutteko?',
-      accept: 'Joo',
+      attending: 'Osallistutteko häihin?',
+      accept: 'Kyllä',
       decline: 'Ei',
       declineName: 'Nimesi *',
       decliningNamePlaceholder: 'Etunimi Sukunimi',
@@ -50,16 +58,17 @@ const translations = {
       guestLabel: 'Vieras',
       guestName: 'Nimi *',
       guestNamePlaceholder: 'Vieraan nimi',
-      dietary: 'Ruokarajoitukset',
-      vegetarian: 'Kasvisruokavalio',
+      dietary: 'Ruokavalio',
+      vegetarian: 'Kasvis',
       vegan: 'Vegaani',
       glutenFree: 'Gluteeniton',
+      lactoseFree: 'Laktoositon',
       allergies: 'Muut allergiat tai ruokavaliotarpeet',
       allergiesPlaceholder: 'Kerro allergioista tai erityisistä ruokavaliotarpeista...',
       speech: 'Haluatteko pitää puheen tai muun esityksen?',
       speechNote: 'Kerrottehan viestikentässä lyhyesti aiheesta, niin osaamme järjestää teille ajan ohjelmassa.',
-      message: 'Viesti pariskunnalle',
-      messagePlaceholder: 'Jättäkää onnittelunne, kysymyksenne tai lisätietoja puheesta...',
+      message: 'Viesti hääparille',
+      messagePlaceholder: 'Voitte jättää onnittelunne, kysymyksenne tai lisätietoja puheesta...',
       sending: 'Lähetetään...',
       submit: 'Lähetä ilmoittautuminen',
     },
@@ -78,30 +87,35 @@ const translations = {
       title: 'Info',
       ceremony: 'Vigsel',
       ceremonyDate: 'Lördag, 12.9.2026',
-      ceremonyVenue: 'Viinikan kyrka, Tammerfors',
-      ceremonyAddress: 'Gatunamn 1, 33XXX Tammerfors',
+      ceremonyVenue: 'Viinikka kyrka, Tammerfors',
+      ceremonyAddress: 'Kaartotie 1, 33100 Tammerfors',
       reception: 'Fest',
       receptionVenue: 'Komediateatteri, Tammerfors',
-      receptionAddress: 'Gatunamn 1, 33XXX Tammerfors',
-      receptionTime: 'från 14:00',
+      receptionAddress: 'Lapintie 3 a, 33100 Tammerfors',
+      receptionTime: 'från 14.00',
       dressCode: 'Klädkod',
       dressCodeValue: 'Festlig',
-      dressCodeNote: 'något annat?',
       other: 'Övrigt',
       otherContent: 'annat',
       otherNote: 'annat',
       gift: 'Bröllopsgåva',
-      giftText: 'Som bröllopsgåva önskar vi ekonomiskt stöd till vår smekmånadsresa. Ni är välkomna att skicka valfri summa till bankgirot:',
-      giftAccount: 'IBAN: [tba]',
-      giftName: 'nimi',
+      giftText: 'Som bröllopsgåva önskar vi bara att ni kommer',
+      giftTextSuffix: '(eller Riikka önskar det, till Aleksi kan ni skicka valfri summa för bröllopsresan)',
+      giftAccount: 'IBAN: FI29 3939 0066 2673 86',
+      giftName: 'Mottagare: Riikka Koivisto',
       location: 'Plats',
+      countdownLabel: 'Tid till bröllopet',
+      days: 'dagar',
+      hours: 'timmar',
+      minutes: 'minuter',
+      seconds: 'sekunder',
     },
     rsvp: {
       title: 'Anmälan',
-      subtitle: 'Vi vill gärna fira med er! Vänligen anmäl er senast 1.5.2026.',
+      note: 'Det räcker att en person/hushåll fyller i anmälningsformuläret. Vänligen anmäl er senast 9.8.2026.',
       successMessage: 'Tack! Er anmälan har mottagits.',
       errorMessage: 'Hoppsan! Något gick fel. Försök igen eller kontakta oss direkt.',
-      attending: 'Kommer ni att delta?',
+      attending: 'Kommer ni till bröllopet?',
       accept: 'Ja',
       decline: 'Nej',
       declineName: 'Ditt namn *',
@@ -114,6 +128,7 @@ const translations = {
       vegetarian: 'Vegetarisk',
       vegan: 'Vegan',
       glutenFree: 'Glutenfri',
+      lactoseFree: 'Laktosfri',
       allergies: 'Övriga allergier eller kostbehov',
       allergiesPlaceholder: 'Berätta om allergier eller specifika kostbehov...',
       speech: 'Vill ni hålla tal eller annat framträdande?',
@@ -122,6 +137,72 @@ const translations = {
       messagePlaceholder: 'Dela dina lyckönskningar, frågor eller info om tal...',
       sending: 'Skickar...',
       submit: 'Skicka anmälan',
+    },
+  },
+  en: {
+    nav: {
+      home: 'Home',
+      info: 'Info',
+      rsvp: 'RSVP',
+    },
+    home: {
+      tagline: 'Welcome to our wedding!',
+      rsvpButton: 'RSVP',
+    },
+    info: {
+      title: 'Info',
+      ceremony: 'Ceremony',
+      ceremonyDate: 'Saturday, 12.9.2026',
+      ceremonyVenue: 'Viinikka Church, Tampere',
+      ceremonyAddress: 'Kaartotie 1, 33100 Tampere',
+      reception: 'Reception',
+      receptionVenue: 'Komediateatteri, Tampere',
+      receptionAddress: 'Lapintie 3 a, 33100 Tampere',
+      receptionTime: 'from 14.00',
+      dressCode: 'Dress Code',
+      dressCodeValue: 'Formal',
+      other: 'Other',
+      otherContent: 'other',
+      otherNote: 'other',
+      gift: 'Wedding Gift',
+      giftText: 'As a wedding gift, we only wish for your presence',
+      giftTextSuffix: '(or as Riikka wishes, for Aleksi you are welcome to contribute any amount towards the honeymoon trip)',
+      giftAccount: 'IBAN: FI29 3939 0066 2673 86',
+      giftName: 'Recipient: Riikka Koivisto',
+      location: 'Location',
+      countdownLabel: 'Time until the wedding',
+      days: 'days',
+      hours: 'hours',
+      minutes: 'minutes',
+      seconds: 'seconds',
+    },
+    rsvp: {
+      title: 'RSVP',
+      note: 'It is enough for one person/household to fill in the registration form. Please RSVP by 9.8.2026.',
+      successMessage: 'Thank you! Your RSVP has been received.',
+      errorMessage: 'Oops! Something went wrong. Please try again or contact us directly.',
+      attending: 'Will you attend the wedding?',
+      accept: 'Yes',
+      decline: 'No',
+      declineName: 'Your name *',
+      decliningNamePlaceholder: 'First name Last name',
+      guestCount: 'Number of guests',
+      guestLabel: 'Guest',
+      guestName: 'Name *',
+      guestNamePlaceholder: 'Guest name',
+      dietary: 'Dietary requirements',
+      vegetarian: 'Vegetarian',
+      vegan: 'Vegan',
+      glutenFree: 'Gluten-free',
+      lactoseFree: 'Lactose-free',
+      allergies: 'Other allergies or dietary needs',
+      allergiesPlaceholder: 'Tell us about any allergies or specific dietary needs...',
+      speech: 'Would you like to give a speech or other performance?',
+      speechNote: 'Please briefly describe it in the message field so we can schedule time for you in the programme.',
+      message: 'Message to the couple',
+      messagePlaceholder: 'Leave your congratulations, questions, or details about your speech...',
+      sending: 'Sending...',
+      submit: 'Submit RSVP',
     },
   },
 };
@@ -212,7 +293,7 @@ const LockScreen = ({ onUnlock }) => {
         </h1>
         <p style={{ color: '#888', fontSize: '0.85rem', letterSpacing: '1px', marginBottom: '2rem' }}>12.9.2026</p>
 
-        <p style={{ color: '#555', fontSize: '0.9rem', marginBottom: '1.25rem' }}>Syötä salasana / Ange lösenord</p>
+        <p style={{ color: '#555', fontSize: '0.9rem', marginBottom: '1.25rem' }}>Syötä salasana / Ange lösenord / Enter passcode</p>
 
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1rem' }}>
           {refs.map((ref, i) => (
@@ -233,7 +314,7 @@ const LockScreen = ({ onUnlock }) => {
 
         {error && (
           <p style={{ color: '#c62828', fontSize: '0.85rem', marginTop: '0.5rem' }}>
-            Väärä koodi / Fel kod
+            Väärä koodi / Fel kod / Wrong code
           </p>
         )}
       </div>
@@ -283,22 +364,60 @@ const HomePage = ({ setCurrentPage, t }) => (
       </button>
     </div>
 
-    <div className="photo-section">
-      {/* Photos coming soon */}
-    </div>
   </div>
 );
+
+const Countdown = ({ t }) => {
+  const getTimeLeft = () => {
+    const wedding = new Date('2026-09-12T13:00:00');
+    const diff = wedding - new Date();
+    if (diff <= 0) return null;
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+      seconds: Math.floor((diff % (1000 * 60)) / 1000),
+    };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft);
+
+  useEffect(() => {
+    const timer = setInterval(() => setTimeLeft(getTimeLeft()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!timeLeft) return null;
+
+  const pad = n => String(n).padStart(2, '0');
+
+  return (
+    <div className="countdown-section">
+      <div className="countdown-bar">
+        <span className="countdown-label">{t.info.countdownLabel}:</span>
+        <span className="countdown-inline">
+          <b>{pad(timeLeft.days)}</b> {t.info.days} &nbsp;
+          <b>{pad(timeLeft.hours)}</b> {t.info.hours} &nbsp;
+          <b>{pad(timeLeft.minutes)}</b> {t.info.minutes} &nbsp;
+          <b>{pad(timeLeft.seconds)}</b> {t.info.seconds}
+        </span>
+      </div>
+    </div>
+  );
+};
 
 const InfoPage = ({ t }) => (
   <div className="page-content info-page">
     <h1 className="page-title">{t.info.title}</h1>
+
+    <Countdown t={t} />
 
     <div className="info-grid">
       <div className="info-card">
         <h2>{t.info.ceremony}</h2>
         <div className="info-details">
           <div className="detail-row">
-            <span className="time">13:00</span>
+            <span className="time">13.00</span>
           </div>
           <div className="detail-row">
             <Calendar size={18} />
@@ -337,7 +456,12 @@ const InfoPage = ({ t }) => (
       <div className="info-card">
         <h2>{t.info.dressCode}</h2>
         <div className="info-details">
-          <p>{t.info.dressCodeValue}</p>
+          <div className="dress-icons">
+            <DressIcon width={30} height={30} />
+            <SuitIcon width={30} height={30} /> 
+            <p className="detail-row">{t.info.dressCodeValue}</p>
+          </div>
+
           <p className="dress-note">{t.info.dressCodeNote}</p>
         </div>
       </div>
@@ -345,7 +469,7 @@ const InfoPage = ({ t }) => (
       <div className="info-card">
         <h2>{t.info.gift}</h2>
         <div className="info-details">
-          <p>{t.info.giftText}</p>
+          <p>{t.info.giftText} <Smile size={16} style={{ display: 'inline', verticalAlign: 'middle', color: 'var(--accent)' }} /> {t.info.giftTextSuffix}</p>
           <p className="gift-account">{t.info.giftAccount}</p>
           <p className="small-text">{t.info.giftName}</p>
         </div>
@@ -415,7 +539,7 @@ const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) =
   return (
     <div className="page-content rsvp-page">
       <h1 className="page-title">{t.rsvp.title}</h1>
-      <p className="rsvp-subtitle">{t.rsvp.subtitle}</p>
+      <p className="rsvp-note">{t.rsvp.note}</p>
 
       {submitStatus === 'success' && (
         <div className="success-message">
@@ -498,6 +622,7 @@ const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) =
                       { value: 'vegetarian', label: t.rsvp.vegetarian },
                       { value: 'vegan', label: t.rsvp.vegan },
                       { value: 'gluten-free', label: t.rsvp.glutenFree },
+                      { value: 'lactose-free', label: t.rsvp.lactoseFree },
                     ].map(opt => (
                       <label key={opt.value} className="checkbox-label">
                         <input type="checkbox" value={opt.value}
@@ -556,11 +681,44 @@ const RSVPPage = ({ formData, setFormData, submitStatus, setSubmitStatus, t }) =
   );
 };
 
+const POLAROID_CONFIG = [
+  { src: 'k1.jpg', side: 'left',  pos: '10px',  rot: -6, dur: 188, delay: 0    },
+  { src: 'k2.jpg', side: 'right', pos: '10px',  rot:  4, dur: 188, delay: -23  },
+  { src: 'k3.jpg', side: 'left',  pos: '15px',  rot:  3, dur: 188, delay: -47  },
+  { src: 'k8.jpg', side: 'right', pos: '12px',  rot: -6, dur: 188, delay: -70  },
+  { src: 'k5.jpg', side: 'left',  pos: '5px',   rot:  7, dur: 188, delay: -94  },
+  { src: 'k4.jpg', side: 'right', pos: '5px',   rot: -5, dur: 188, delay: -117 },
+  { src: 'k7.jpg', side: 'left',  pos: '8px',   rot:  5, dur: 188, delay: -141 },
+  { src: 'k6.jpg', side: 'right', pos: '15px',  rot: -3, dur: 188, delay: -164 },
+];
+
+const FallingPolaroids = () => (
+  <div style={{ position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none', overflow: 'hidden' }}>
+    {POLAROID_CONFIG.map((cfg, i) => (
+      <div
+        key={i}
+        className={`pol-wrap pol-${cfg.side}`}
+        style={{
+          [cfg.side]: cfg.pos,
+          '--rot': `${cfg.rot}deg`,
+          animationDuration: `${cfg.dur}s`,
+          animationDelay: `${cfg.delay}s`,
+        }}
+      >
+        <div className="pol-inner">
+          <img src={`${process.env.PUBLIC_URL}/photos/${cfg.src}`} alt="" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export default function WeddingWebsite() {
   const [locked, setLocked] = useState(() => localStorage.getItem('wedding_auth') !== 'true');
   const [currentPage, setCurrentPage] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [lang, setLang] = useState('fi');
+  const [showGame, setShowGame] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     attending: '',
@@ -587,21 +745,24 @@ export default function WeddingWebsite() {
         }
 
         :root {
-          --primary: #2c5f5d;
+          --primary: #395f4f;
           --primary-light: #4a8886;
-          --accent: #d4a574;
+          --accent: #e8c9a8;
           --accent-light: #e8c9a8;
           --text-dark: #2c2c2c;
+          --text-nav: #395f4f;
           --text-light: #666;
           --bg-cream: #faf8f5;
           --bg-white: #ffffff;
           --border-color: #e5e0d8;
         }
 
+        html { background: var(--bg-cream); }
+
         body {
           font-family: 'Montserrat', sans-serif;
           color: var(--text-dark);
-          background: var(--bg-cream);
+          background: transparent;
           line-height: 1.6;
         }
 
@@ -611,7 +772,6 @@ export default function WeddingWebsite() {
 
         /* Navigation */
         nav {
-          border-bottom: 1px solid var(--primary);
           position: sticky;
           top: 0;
           z-index: 100;
@@ -643,7 +803,7 @@ export default function WeddingWebsite() {
         .nav-links button {
           background: none;
           border: none;
-          color: var(--text-dark);
+          color: var(--text-nav);
           text-decoration: none;
           font-size: 0.95rem;
           font-family: 'Montserrat', sans-serif;
@@ -654,9 +814,14 @@ export default function WeddingWebsite() {
           padding: 0;
         }
 
-        .nav-links button:hover,
+        .nav-links button:hover {
+          color: var(--primary);
+        }
+
         .nav-links button.active {
           color: var(--primary);
+          text-decoration: underline;
+          text-underline-offset: 3px;
         }
 
         .lang-switcher {
@@ -673,7 +838,7 @@ export default function WeddingWebsite() {
           font-size: 0.85rem;
           font-weight: 600;
           letter-spacing: 0.5px;
-          color: var(--text-light);
+          color: var(--text-nav);
           padding: 0.25rem 0.4rem;
           border-radius: 2px;
           transition: color 0.2s ease;
@@ -726,6 +891,7 @@ export default function WeddingWebsite() {
             left: 0;
             right: 0;
             flex-direction: column;
+            background-color: #faf8f5;
             background-image: url('${process.env.PUBLIC_URL}/background.png');
             background-repeat: repeat;
             background-size: auto;
@@ -921,13 +1087,47 @@ export default function WeddingWebsite() {
           color: var(--text-light);
         }
 
+        /* Countdown */
+        .countdown-section {
+          text-align: center;
+          margin-bottom: 2.5rem;
+        }
+
+        .countdown-bar {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.75rem;
+          background: var(--bg-white);
+          border: 1px solid var(--border-color);
+          border-radius: 4px;
+          padding: 0.6rem 1.25rem;
+          font-size: 1.5rem;
+          color: var(--text-light);
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .countdown-label {
+          font-style: italic;
+          color: var(--text-light);
+        }
+
+        .countdown-inline b {
+          font-weight: 600;
+          color: var(--primary);
+          font-variant-numeric: tabular-nums;
+          display: inline-block;
+          min-width: 2ch;
+          text-align: right;
+        }
+
         /* Info Page */
         .page-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: 3.5rem;
           color: var(--primary);
           text-align: center;
-          margin-bottom: 3rem;
+          margin-bottom: 2rem;
           font-weight: 400;
         }
 
@@ -1028,16 +1228,26 @@ export default function WeddingWebsite() {
           max-width: 700px;
         }
 
-        .rsvp-subtitle {
-          text-align: center;
-          color: var(--text-light);
-          margin-bottom: 3rem;
-          font-size: 1.1rem;
+
+
+        .dress-icons {
+          display: flex;
+          align-items: flex-end;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+          color: var(--accent);
         }
 
-        .photo-section {
-          margin-top: 4rem;
-          min-height: 200px;
+        .rsvp-note {
+          text-align: center;
+          color: var(--primary);
+          background: var(--accent-light);
+          border: 1px solid var(--accent);
+          border-radius: 4px;
+          padding: 1rem 1.5rem;
+          margin-bottom: 1rem;
+          font-size: 0.95rem;
+          line-height: 1.6;
         }
 
         .guest-section {
@@ -1222,11 +1432,54 @@ export default function WeddingWebsite() {
             order: -1;
           }
         }
+
+        /* Falling polaroids */
+        .pol-wrap {
+          position: absolute;
+          width: 330px;
+          animation: polaroidFall linear infinite;
+        }
+
+        .pol-inner {
+          background: #fff;
+          padding: 24px;
+          padding-bottom: 78px;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.13);
+          transform: rotate(var(--rot));
+        }
+
+        .pol-inner img {
+          width: 100%;
+          height: 255px;
+          object-fit: cover;
+          display: block;
+        }
+
+        @keyframes polaroidFall {
+          from { transform: translateY(-480px); }
+          to   { transform: translateY(calc(100vh + 480px)); }
+        }
+
+        @media (min-width: 769px) and (max-width: 1300px) {
+          .pol-wrap { width: 180px; }
+          .pol-inner { padding: 13px; padding-bottom: 42px; box-shadow: 0 6px 22px rgba(0,0,0,0.13); }
+          .pol-inner img { height: 140px; }
+        }
+
+        @media (max-width: 768px) {
+          .pol-wrap { width: 110px; }
+          .pol-inner { padding: 8px; padding-bottom: 26px; box-shadow: 0 4px 16px rgba(0,0,0,0.13); }
+          .pol-inner img { height: 85px; }
+          .pol-left  { left: 0 !important; }
+          .pol-right { right: 0 !important; left: auto !important; }
+        }
       `}</style>
+
+      {currentPage === 'home' && <FallingPolaroids />}
 
       <nav style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)`, backgroundRepeat: 'repeat', backgroundSize: 'auto 400%', backgroundPosition: '0 -132px', backgroundColor: '#faf8f5' }}>
         <div className="nav-container">
-          <div className="logo">R & A</div>
+          <button className="logo" onClick={() => { setCurrentPage('home'); setMenuOpen(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>R & A</button>
           <ul className={`nav-links ${menuOpen ? 'open' : ''}`}>
             <li>
               <button
@@ -1252,6 +1505,11 @@ export default function WeddingWebsite() {
                 {t.nav.rsvp}
               </button>
             </li>
+            <li>
+              <button onClick={() => { setShowGame(true); setMenuOpen(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
+                <img src={`${process.env.PUBLIC_URL}/ohjain.png`} alt="Peli" style={{ height: '28px', width: 'auto', filter: 'brightness(0) saturate(100%) invert(32%) sepia(22%) saturate(600%) hue-rotate(107deg) brightness(85%)' }} />
+              </button>
+            </li>
           </ul>
           <div className="nav-right">
             <div className="lang-switcher">
@@ -1268,6 +1526,13 @@ export default function WeddingWebsite() {
               >
                 SV
               </button>
+              <span className="lang-divider">|</span>
+              <button
+                className={`lang-btn ${lang === 'en' ? 'active' : ''}`}
+                onClick={() => setLang('en')}
+              >
+                EN
+              </button>
             </div>
             <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -1279,6 +1544,8 @@ export default function WeddingWebsite() {
       {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} t={t} />}
       {currentPage === 'info' && <InfoPage t={t} />}
       {currentPage === 'rsvp' && <RSVPPage formData={formData} setFormData={setFormData} submitStatus={submitStatus} setSubmitStatus={setSubmitStatus} t={t} />}
+
+      {showGame && <GamePage onClose={() => setShowGame(false)} />}
     </div>
   );
 }

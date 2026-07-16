@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "WebFetch(domain:svgrepo.com)",
+      "WebSearch",
+      "WebFetch(domain:iconscout.com)",
+      "WebFetch(domain:uxwing.com)",
+      "WebFetch(domain:www.uxwing.com)",
+      "WebFetch(domain:icon-sets.iconify.design)",
+      "WebFetch(domain:www.flaticon.com)",
+      "WebFetch(domain:freesvg.org)"
+    ]
+  }
+}
