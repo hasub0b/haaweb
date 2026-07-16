@@ -513,7 +513,7 @@ export function GamePage({ onClose }) {
             </button>
 
             <div style={{ color: C.accent, fontSize: '0.72rem', letterSpacing: '3px', marginBottom: '0.75rem' }}>
-              TULOSLISTAUS
+              TULOKSET
             </div>
 
             {lbLoading ? (
