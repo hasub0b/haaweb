@@ -26,7 +26,7 @@ const translations = {
       reception: 'Juhla',
       receptionVenue: 'Komediateatteri, Tampere',
       receptionAddress: 'Lapintie 3 a, 33100 Tampere',
-      receptionTime: 'alkaen 14.00',
+      receptionTime: 'alkaen 14.30 (Hääpari saapuu 15.00)',
       dressCode: 'Pukukoodi',
       dressCodeValue: 'Juhlava',
       other: 'Muuta',
